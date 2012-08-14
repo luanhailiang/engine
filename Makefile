@@ -1,4 +1,5 @@
 CC = gcc
+MAKE = make
 CFLAGS = -g #-pg
 
 BUILD = build
@@ -10,7 +11,12 @@ SHARERCS = pzmq.c
 GATERCS = main.c client.c worker.c message.c
 WORKRCS = main.c
 
-all : gate work
+LUA_ZMQ = lualib/zmq
+LUA_MONGO = lualib/mongo
+
+all : gate work 
+
+lua : zmq mongo
 
 clean :
 	rm -rf $(BUILD)
@@ -73,5 +79,11 @@ work : $(WORK_O) $(SHARE_O)
 	
 lib : $(SHARE_O)
 
-.PHONY : all clean lib
+zmq:
+	$(MAKE) -C $(LUA_ZMQ)
+
+mongo:
+	$(MAKE) -C $(LUA_MONGO)
+
+.PHONY : all clean lib lua
 
