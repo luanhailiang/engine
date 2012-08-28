@@ -4,9 +4,7 @@
 start()
 {
 	./bin/gated ./bin/config.lua > log/gated 2>&1 &
-	echo 'start gated'
 	./bin/workd ./bin/config.lua > log/workd 2>&1 &
-	echo 'start workd'
 }
 
 stop()
