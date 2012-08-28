@@ -18,9 +18,10 @@
 #include <signal.h>
 
 #include "client.h"
+#include "../share/config.h"
 
 int g_epollfd;
-interactive_t g_sockets[MAX_EVENTS] = {0};
+interactive_t g_sockets[MAX_LINK] = {0};
 
 /**
  * clear break socket
@@ -253,7 +254,8 @@ init_client_bind(){
 	struct epoll_event ev;
 	struct sockaddr_in my_addr;
 	/* set listen port */
-   	myport = MY_PORT;
+	config_t *cfg = get_config();
+   	myport = cfg->gate_port;
 	/* set pipe signal */
     if(signal(SIGPIPE, SIG_IGN) == SIG_ERR){
     	perror("signal");
