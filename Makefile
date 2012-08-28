@@ -7,37 +7,37 @@ BIN = ./script/bin
 
 BUILD = build
 BUILD_GATE = $(BUILD)/gate
-BUILD_WORK = $(BUILD)/work
 BUILD_SHARE = $(BUILD)/share
+BUILD_WORKER = $(BUILD)/worker
 BUILD_MASTER = $(BUILD)/master
 
 GATE = gated
-WORK = workd
+WORKER = workerd
 MASTER = masterd
 MONGO = mongo.so
 ZMQ = zmq.so
 
 SHARERCS = pzmq.c config.c
 GATERCS = main.c client.c worker.c swap.c
-WORKRCS = main.c
+WORKERRCS = main.c
 MASTERRCS = main.c
 
 LUA_ZMQ = lualib/zmq
 LUA_MONGO = lualib/mongo
 
-all : gate work master
+all : gate worker master
 
 lua : zmq mongo
 
 clean :
 	rm -rf $(BUILD)
 
-$(BUILD) : $(BUILD_GATE) $(BUILD_WORK) $(BUILD_SHARE) $(BUILD_MASTER)
+$(BUILD) : $(BUILD_GATE) $(BUILD_WORKER) $(BUILD_SHARE) $(BUILD_MASTER)
 
 $(BUILD_GATE) :
 	mkdir -p $@
 	
-$(BUILD_WORK) :
+$(BUILD_WORKER) :
 	mkdir -p $@
 
 $(BUILD_SHARE) :
@@ -72,18 +72,18 @@ endef
 
 $(foreach s,$(GATERCS),$(eval $(call BUILD_TEMP,$(s))))
 
-WORK_O :=
+WORKER_O :=
 
 define BUILD_TEMP
-  TAR :=  $(BUILD_WORK)/$(notdir $(basename $(1)))
-  WORK_O := $(WORK_O) $$(TAR).o
-  $$(TAR).o : | $(BUILD_WORK)
+  TAR :=  $(BUILD_WORKER)/$(notdir $(basename $(1)))
+  WORKER_O := $(WORKER_O) $$(TAR).o
+  $$(TAR).o : | $(BUILD_WORKER)
   -include $$(TAR).d
-  $$(TAR).o : work/$(1)
+  $$(TAR).o : worker/$(1)
 	$(CC) $(CFLAGS) -c -Igate -Ishare -o $$@ -MMD $$< $(LIBS)
 endef
 
-$(foreach s,$(WORKRCS),$(eval $(call BUILD_TEMP,$(s))))
+$(foreach s,$(WORKERRCS),$(eval $(call BUILD_TEMP,$(s))))
 
 MASTER_O :=
 
@@ -101,8 +101,8 @@ $(foreach s,$(MASTERRCS),$(eval $(call BUILD_TEMP,$(s))))
 gate : $(GATE_O) $(SHARE_O)
 	@cd $(BUILD) && $(CC) $(CFLAGS) -o $(GATE) $(addprefix ../,$^) $(LIBS) 
 
-work : $(WORK_O) $(SHARE_O)
-	@cd $(BUILD) && $(CC) $(CFLAGS) -o $(WORK) $(addprefix ../,$^) $(LIBS) 
+worker : $(WORKER_O) $(SHARE_O)
+	@cd $(BUILD) && $(CC) $(CFLAGS) -o $(WORKER) $(addprefix ../,$^) $(LIBS) 
 
 master : $(MASTER_O) $(SHARE_O)
 	@cd $(BUILD) && $(CC) $(CFLAGS) -o $(MASTER) $(addprefix ../,$^) $(LIBS) 
@@ -117,7 +117,7 @@ mongo:
 
 install: all
 	$(INSTALL) $(BUILD)/$(GATE) $(BIN)
-	$(INSTALL) $(BUILD)/$(WORK) $(BIN)
+	$(INSTALL) $(BUILD)/$(WORKER) $(BIN)
 	$(INSTALL) $(BUILD)/$(MASTER) $(BIN)
 	$(INSTALL) $(BUILD)/$(MONGO) $(BIN)
 	$(INSTALL) $(BUILD)/$(ZMQ) $(BIN)
