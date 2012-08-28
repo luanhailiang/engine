@@ -1,6 +1,6 @@
 /*
  * worker.c
- * handle message from worker
+ * gate handle message with worker
  *  Created on: Jul 31, 2012
  *      Author: luan
  */
