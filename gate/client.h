@@ -11,6 +11,11 @@
 #include <arpa/inet.h>
 #include <sys/epoll.h>
 
+#define MAX_BUFF		8192
+#define MAX_LINK		8192
+#define MAX_EVENTS		128
+#define LISTEN_NUM		32
+
 #define USE_MEMCPY
 
 #define S_LINKDEAD		0x01
@@ -18,10 +23,6 @@
 #define S_WAITID		0x04
 #define S_READY			0x08
 
-#define MY_PORT			7878
-#define LISTEN_NUM		128
-#define MAX_EVENTS		256
-#define MAX_BUFF		8192
 
 //socket type
 #define SK_TYPE_LISTEN	1

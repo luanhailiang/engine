@@ -17,6 +17,12 @@ void shut_down(int sig){
 int
 main(int argc, char **argv){
 	signal(SIGINT, shut_down);
+	//load config data
+    if(!argv[1]){
+    	fprintf(stderr,"No config file\n");
+    	exit(EXIT_FAILURE);
+    }
+	load_config(argv[1]);
 	//start listen client
 	init_client_bind();
 	//start listen worker
