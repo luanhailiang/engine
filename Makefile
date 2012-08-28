@@ -1,14 +1,22 @@
 CC = gcc
 MAKE = make
+INSTALL=install -c
 CFLAGS = -g #-pg
+LIBS = 	-lzmq -llua -ldl
+BIN = ./script/bin
 
 BUILD = build
 BUILD_GATE = $(BUILD)/gate
 BUILD_WORK = $(BUILD)/work
 BUILD_SHARE = $(BUILD)/share
 
-SHARERCS = pzmq.c
-GATERCS = main.c client.c worker.c message.c
+GATE = gated
+WORK = workd
+MONGO = mongo.so
+ZMQ = zmq.so
+
+SHARERCS = pzmq.c config.c
+GATERCS = main.c client.c worker.c swap.c
 WORKRCS = main.c
 
 LUA_ZMQ = lualib/zmq
@@ -40,7 +48,7 @@ define BUILD_temp
   $$(TAR).o : | $(BUILD_SHARE)
   -include $$(TAR).d
   $$(TAR).o : share/$(1)
-	$(CC) $(CFLAGS) -c -Ishare -o $$@ -MMD $$<
+	$(CC) $(CFLAGS) -c -Ishare -o $$@ -MMD $$< $(LIBS)
 endef
 
 $(foreach s,$(SHARERCS),$(eval $(call BUILD_temp,$(s))))
@@ -53,7 +61,7 @@ define BUILD_temp
   $$(TAR).o : | $(BUILD_GATE)
   -include $$(TAR).d
   $$(TAR).o : gate/$(1)
-	$(CC) $(CFLAGS) -c -Igate -Ishare -o $$@ -MMD $$<
+	$(CC) $(CFLAGS) -c -Igate -Ishare -o $$@ -MMD $$< $(LIBS)
 endef
 
 $(foreach s,$(GATERCS),$(eval $(call BUILD_temp,$(s))))
@@ -66,16 +74,16 @@ define BUILD_temp
   $$(TAR).o : | $(BUILD_WORK)
   -include $$(TAR).d
   $$(TAR).o : work/$(1)
-	$(CC) $(CFLAGS) -c -Igate -Ishare -o $$@ -MMD $$<
+	$(CC) $(CFLAGS) -c -Igate -Ishare -o $$@ -MMD $$< $(LIBS)
 endef
 
 $(foreach s,$(WORKRCS),$(eval $(call BUILD_temp,$(s))))
 
 gate : $(GATE_O) $(SHARE_O)
-	@cd $(BUILD) && $(CC) $(CFLAGS) -o proxy $(addprefix ../,$^) -lzmq
+	@cd $(BUILD) && $(CC) $(CFLAGS) -o $(GATE) $(addprefix ../,$^) $(LIBS) 
 
 work : $(WORK_O) $(SHARE_O)
-	@cd $(BUILD) && $(CC) $(CFLAGS) -o worker $(addprefix ../,$^) -lzmq
+	@cd $(BUILD) && $(CC) $(CFLAGS) -o $(WORK) $(addprefix ../,$^) $(LIBS) 
 	
 lib : $(SHARE_O)
 
@@ -84,6 +92,12 @@ zmq:
 
 mongo:
 	$(MAKE) -C $(LUA_MONGO)
+
+install: all
+	$(INSTALL) $(BUILD)/$(GATE) $(BIN)
+	$(INSTALL) $(BUILD)/$(WORK) $(BIN)
+	$(INSTALL) $(BUILD)/$(MONGO) $(BIN)
+	$(INSTALL) $(BUILD)/$(ZMQ) $(BIN)
 
 .PHONY : all clean lib lua
 
