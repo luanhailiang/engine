@@ -1,6 +1,6 @@
 /*
  * client.c
- * handle message with client
+ * handle message from client
  *  Created on: Jul 31, 2012
  *      Author: luan
  */

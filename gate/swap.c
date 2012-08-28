@@ -1,6 +1,6 @@
 /*
  * message.c
- * handle message transmit
+ * swap message between client and worker
  *  Created on: Jul 31, 2012
  *      Author: luan
  */

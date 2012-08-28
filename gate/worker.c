@@ -1,6 +1,6 @@
 /*
  * worker.c
- * handle message with worker
+ * handle message from worker
  *  Created on: Jul 31, 2012
  *      Author: luan
  */
