@@ -3,8 +3,8 @@
 
 start()
 {
-	./bin/gated ./bin/config.lua > log/gated 2>&1 &
-	./bin/workd ./bin/config.lua > log/workd 2>&1 &
+	./bin/gated ./bin/config.lua > log/GATE 2>&1 &
+	./bin/workd ./bin/config.lua > log/WORKER 2>&1 &
 }
 
 stop()
