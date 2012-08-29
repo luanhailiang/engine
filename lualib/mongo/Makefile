@@ -19,7 +19,7 @@ all: luamongo
 clean:
 	$(RM) $(BUILD_MONGO) $(BUILD)/$(OUTLIB)
 
-luamongo: $(OBJS)
+luamongo:$(BUILD) $(OBJS)
 	$(CC) $(CFLAGS) $(addprefix $(BUILD_MONGO)/,$(OBJS)) -o $(BUILD)/$(OUTLIB) $(LDFLAGS)
 
 $(BUILD) : $(BUILD_MONGO)
@@ -58,4 +58,4 @@ mongo_bsontypes.o: mongo_bsontypes.cpp common.h
 utils.o: utils.cpp common.h utils.h
 	$(CC) -c -o $(BUILD_MONGO)/$@ $< $(CFLAGS)
 
-.PHONY: all 
+.PHONY: all clean

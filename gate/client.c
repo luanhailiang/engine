@@ -1,6 +1,6 @@
 /*
  * client.c
- * handle message with client
+ * gate handle message with client
  *  Created on: Jul 31, 2012
  *      Author: luan
  */

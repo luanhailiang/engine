@@ -12,4 +12,7 @@
 *.a
 
 .*
-build/*
+/build
+gated
+workerd
+masterd
