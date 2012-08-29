@@ -10,14 +10,25 @@
 
 
 typedef struct config_s{
-	int gate_port;
-	char *gate_addr;
-	char *gate_router;
-	char *master_pub;
-	char *master_pull;
+	int gate_id;
+	int work_id;
+
+	int client_port;
+	int router_port;
+	int worker_port;
+
+	char *master_gate_pub;
+	char *master_gate_push;
+	char *master_work_pub;
+	char *master_work_push;
+
+	char *config_file;
 }config_t;
 
-void load_config(char *file);
+void load_config();
 config_t *get_config();
+void set_work_id(int id);
+void set_gate_id(int gate);
+void set_cfg_dir(char *file);
 
 #endif /* CONFIG_H_ */

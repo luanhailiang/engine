@@ -255,7 +255,7 @@ init_client_bind(){
 	struct sockaddr_in my_addr;
 	/* set listen port */
 	config_t *cfg = get_config();
-   	myport = cfg->gate_port;
+   	myport = cfg->client_port + cfg->gate_id;
 	/* set pipe signal */
     if(signal(SIGPIPE, SIG_IGN) == SIG_ERR){
     	perror("signal");

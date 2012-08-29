@@ -2,7 +2,7 @@ CC = gcc
 MAKE = make
 INSTALL=install -c
 CFLAGS = -g #-pg
-LIBS = 	-lzmq -llua -ldl
+LIBS = 	-lzmq -llua -ldl 
 BIN = ./script/bin
 
 BUILD = build
@@ -17,7 +17,7 @@ MASTER = masterd
 MONGO = mongo.so
 ZMQ = zmq.so
 
-SHARERCS = pzmq.c config.c
+SHARERCS = pzmq.c config.c option.c
 GATERCS = main.c client.c worker.c swap.c
 WORKERRCS = main.c
 MASTERRCS = main.c

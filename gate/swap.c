@@ -13,7 +13,7 @@
 #include "worker.h"
 
 static void
-handle_client_message(interactive_t *ip, char *cmd){
+_handle_client_message(interactive_t *ip, char *cmd){
 	//TODO handle message
 	switch(ip->flag){
 		case S_LINKDEAD:
@@ -29,7 +29,7 @@ handle_client_message(interactive_t *ip, char *cmd){
 }
 
 static void
-handle_worker_message(char *msg){
+_handle_worker_message(char *msg){
 	//TODO handle message
 	printf("-->%s\n",msg);
 }
@@ -44,7 +44,7 @@ start_loop(){
     /* start loop */
 	printf("process start loop handle message\n");
     while(1){
-        nfds = epoll_wait(g_epollfd, events, MAX_EVENTS, 1000);
+        nfds = epoll_wait(g_epollfd, events, MAX_EVENTS, 1);
         if (nfds == -1) {
         	if(errno == EINTR){
         		continue;
@@ -58,11 +58,11 @@ start_loop(){
         		continue;
         	}
         	while((msg = first_cmd_in_buf(ip))){
-        		handle_client_message(ip,msg);
+        		_handle_client_message(ip,msg);
         	}
         }
         while((msg = recv_message()) != NULL){
-        	handle_worker_message(msg);
+        	_handle_worker_message(msg);
         	free(msg);
         }
     }

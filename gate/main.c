@@ -1,6 +1,5 @@
 
 
-
 #include <stdio.h>
 #include <errno.h>
 #include <signal.h>
@@ -8,21 +7,23 @@
 
 #include "client.h"
 #include "worker.h"
+#include "../share/option.h"
+#include "../share/config.h"
 
-void shut_down(int sig){
+static void
+_shut_down(int sig){
 	printf("System shut down by Ctrl+c : %d\n",sig);
 	exit(0);
 }
 
 int
 main(int argc, char **argv){
-	signal(SIGINT, shut_down);
-	//load config data
-    if(!argv[1]){
-    	fprintf(stderr,"No config file\n");
-    	exit(EXIT_FAILURE);
-    }
-	load_config(argv[1]);
+	//add signal handle
+	signal(SIGINT, _shut_down);
+	//handle arguments
+	handle_args_opt(argc,argv,OPT_GATE);
+	//load configure data
+	load_config();
 	//start listen client
 	init_client_bind();
 	//start listen worker
