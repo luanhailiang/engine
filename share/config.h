@@ -23,6 +23,8 @@ typedef struct config_s{
 	char *master_work_push;
 
 	char *config_file;
+
+	char *ip;
 }config_t;
 
 void load_config();

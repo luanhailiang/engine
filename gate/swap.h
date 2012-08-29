@@ -8,6 +8,6 @@
 #ifndef MESSAGE_H_
 #define MESSAGE_H_
 
-
+void start_loop();
 
 #endif /* MESSAGE_H_ */

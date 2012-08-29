@@ -15,12 +15,13 @@
 #include "../share/pzmq.h"
 
 static void
-sig_alrm(int sigo){
+_sig_alrm(int sigo){
 	time_t t;
 	t=time(&t);
 	printf("signal:%d time:%s\n",sigo,ctime(&t));
 }
-int _ualarm (int usecs, int reload) {
+static int
+_ualarm (int usecs, int reload) {
     struct itimerval new, old;
     new.it_interval.tv_usec = reload % 1000000;
     new.it_interval.tv_sec = reload / 1000000;
@@ -41,7 +42,7 @@ int main(){
     zmq_setsockopt (worker, ZMQ_IDENTITY, "A", 1);
     rc = zmq_connect (worker, "ipc://routing.ipc");
     assert(rc == 0);
-    if(signal(SIGALRM,sig_alrm) == SIG_ERR){
+    if(signal(SIGALRM,_sig_alrm) == SIG_ERR){
     	exit(1);
     }
     _ualarm(100000,1000000);

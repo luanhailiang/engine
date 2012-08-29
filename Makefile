@@ -17,7 +17,7 @@ MASTER = masterd
 MONGO = mongo.so
 ZMQ = zmq.so
 
-SHARERCS = pzmq.c config.c option.c
+SHARERCS = pzmq.c config.c option.c utils.c
 GATERCS = main.c client.c worker.c swap.c
 WORKERRCS = main.c
 MASTERRCS = main.c

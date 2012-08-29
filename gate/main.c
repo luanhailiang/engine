@@ -5,6 +5,7 @@
 #include <signal.h>
 #include <stdlib.h>
 
+#include "swap.h"
 #include "client.h"
 #include "worker.h"
 #include "../share/option.h"

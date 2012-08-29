@@ -14,6 +14,7 @@
 #include <string.h>
 
 #include "config.h"
+#include "utils.h"
 
 config_t *
 get_config(){
@@ -86,4 +87,6 @@ load_config(){
 	config->master_work_push = (char *)lua_tostring(L,-1);
 	lua_pop(L,1);
 	lua_close(L);
+
+	config->ip = get_ip();
 }
