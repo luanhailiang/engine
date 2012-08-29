@@ -1,14 +1,9 @@
 CC = gcc
-<<<<<<< HEAD
-CFLAGS = -g  #-pg
-LIBS= -lzmq -llua -ldl
-=======
 MAKE = make
 INSTALL=install -c
 CFLAGS = -g #-pg
 LIBS = 	-lzmq -llua -ldl
 BIN = ./script/bin
->>>>>>> refs/remotes/origin/master
 
 BUILD = build
 BUILD_GATE = $(BUILD)/gate
@@ -16,17 +11,11 @@ BUILD_SHARE = $(BUILD)/share
 BUILD_WORKER = $(BUILD)/worker
 BUILD_MASTER = $(BUILD)/master
 
-<<<<<<< HEAD
-SHARERCS = pzmq.c config.c
-GATERCS = main.c client.c worker.c message.c
-WORKRCS = main.c
-=======
 GATE = gated
 WORKER = workerd
 MASTER = masterd
 MONGO = mongo.so
 ZMQ = zmq.so
->>>>>>> refs/remotes/origin/master
 
 SHARERCS = pzmq.c config.c
 GATERCS = main.c client.c worker.c swap.c
@@ -90,11 +79,7 @@ define BUILD_TEMP
   WORKER_O := $(WORKER_O) $$(TAR).o
   $$(TAR).o : | $(BUILD_WORKER)
   -include $$(TAR).d
-<<<<<<< HEAD
-  $$(TAR).o : work/$(1)
-=======
   $$(TAR).o : worker/$(1)
->>>>>>> refs/remotes/origin/master
 	$(CC) $(CFLAGS) -c -Igate -Ishare -o $$@ -MMD $$< $(LIBS)
 endef
 
@@ -114,22 +99,13 @@ endef
 $(foreach s,$(MASTERRCS),$(eval $(call BUILD_TEMP,$(s))))
 
 gate : $(GATE_O) $(SHARE_O)
-<<<<<<< HEAD
-	@cd $(BUILD) && $(CC) $(CFLAGS) -o proxy $(addprefix ../,$^) $(LIBS)
-=======
 	@cd $(BUILD) && $(CC) $(CFLAGS) -o $(GATE) $(addprefix ../,$^) $(LIBS) 
->>>>>>> refs/remotes/origin/master
 
-<<<<<<< HEAD
-work : $(WORK_O) $(SHARE_O)
-	@cd $(BUILD) && $(CC) $(CFLAGS) -o worker $(addprefix ../,$^) $(LIBS)
-=======
 worker : $(WORKER_O) $(SHARE_O)
 	@cd $(BUILD) && $(CC) $(CFLAGS) -o $(WORKER) $(addprefix ../,$^) $(LIBS) 
 
 master : $(MASTER_O) $(SHARE_O)
 	@cd $(BUILD) && $(CC) $(CFLAGS) -o $(MASTER) $(addprefix ../,$^) $(LIBS) 
->>>>>>> refs/remotes/origin/master
 	
 lib : $(SHARE_O)
 
