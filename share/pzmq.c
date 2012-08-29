@@ -8,6 +8,15 @@
 #include <string.h>
 #include <stdlib.h>
 
+void *
+s_context(){
+	static void *context = NULL;
+	if(context != NULL){
+		return context;
+	}
+	context = zmq_init (1);
+	return context;
+}
 
 inline char *
 s_recv (void *socket) {

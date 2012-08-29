@@ -12,18 +12,18 @@
 #include "../share/pzmq.h"
 #include "../share/config.h"
 
-void * g_context;
 void * g_worker;
 
 void
 init_worker_bind(){
 	int rc;
+	void *context;
 	char addr[30];
 	config_t *cfg;
 
 	cfg = get_config();
-    g_context = zmq_init (1);
-    g_worker = zmq_socket (g_context, ZMQ_ROUTER);
+    context = s_context();
+    g_worker = zmq_socket (context, ZMQ_ROUTER);
     sprintf(addr,"tcp://*:%d",(cfg->router_port+cfg->gate_id));
     rc = zmq_bind (g_worker, addr);
     assert(rc == 0);
