@@ -87,7 +87,6 @@ load_config(){
 	lua_getglobal(L,"master_work_rep");
 	config->master_work_rep = (char *)lua_tostring(L,-1);
 	lua_pop(L,1);
-	lua_close(L);
-
+	//lua_close(L);
 	config->ip = get_ip();
 }

@@ -8,6 +8,7 @@
 
 #include "client.h"
 #include "worker.h"
+#include "master.h"
 #include "../share/gdef.h"
 
 static void
@@ -39,6 +40,12 @@ start_loop(){
 	char *msg;
 	interactive_t *ip;
 	struct epoll_event events[MAX_EVENTS];
+	//connect master
+	init_master_connect();
+	//start listen client
+	init_client_bind();
+	//start listen worker
+	init_worker_router();
     /* start loop */
 	printf("process start loop handle message\n");
     while(1){

@@ -31,7 +31,19 @@ s_recv (void *socket) {
     string [size] = 0;
     return (string);
 }
-
+inline char *
+s_recvb (void *socket) {
+    zmq_msg_t message;
+    zmq_msg_init (&message);
+    if (zmq_recvmsg (socket, &message, 0) < 0)
+        return (NULL);
+    int size = zmq_msg_size (&message);
+    char *string = malloc (size + 1);
+    memcpy (string, zmq_msg_data (&message), size);
+    zmq_msg_close (&message);
+    string [size] = 0;
+    return (string);
+}
 inline int
 s_send (void *socket, char *string) {
     int rc;

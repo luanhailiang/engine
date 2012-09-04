@@ -5,10 +5,9 @@
  *      Author: luan
  */
 
-#include <zmq.h>
-#include <stddef.h>
 
 #include "../share/gdef.h"
+#include "../share/pzmq.h"
 #include "../share/config.h"
 
 static void *g_gate = NULL;
@@ -21,7 +20,7 @@ init_gate_connect(){
 
 	config_t *cfg;
 	cfg = get_config();
-	assert(cfg->work_id == 0);
+	assert(cfg->work_id != 0);
 	sprintf(id,"%03d",cfg->work_id);
 	context = s_context();
 	g_gate = zmq_socket (context, ZMQ_DEALER);
@@ -42,4 +41,8 @@ recv_message_gate(){
     size_t more_size = sizeof (more);
     zmq_getsockopt (g_gate, ZMQ_RCVMORE, &more, &more_size);
 	return s_recv(g_gate);
+}
+void *
+get_gate_dealer(){
+	return g_gate;
 }

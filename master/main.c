@@ -5,8 +5,10 @@
  *      Author: luan
  */
 
-
+#include "backend.h"
 #include "../share/gdef.h"
+#include "../share/option.h"
+#include "../share/config.h"
 
 static void
 _shut_down(int sig){
@@ -19,4 +21,12 @@ int
 main(int argc, char **argv){
 	//add signal handle
 	signal(SIGINT, _shut_down);
+
+	//handle arguments
+	handle_args_opt(argc,argv);
+	//load configure data
+	load_config();
+
+	//start loop
+	backend();
 }

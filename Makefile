@@ -18,7 +18,7 @@ MONGO = mongo.so
 ZMQ = zmq.so
 
 SHARERCS = pzmq.c config.c option.c utils.c log.c
-GATERCS = main.c client.c worker.c swap.c
+GATERCS = main.c client.c worker.c swap.c master.c
 WORKERRCS = main.c gate.c master.c worker.c backend.c
 MASTERRCS = main.c gate.c worker.c backend.c
 

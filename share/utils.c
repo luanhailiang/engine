@@ -17,7 +17,7 @@
 #include <arpa/inet.h>
 #include <errno.h>
 
-#define ETH_NAME	"eth0"
+#define ETH_NAME	"wlan0"
 
 char *
 get_ip(){

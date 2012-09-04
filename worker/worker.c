@@ -6,6 +6,7 @@
  */
 
 #include "../share/gdef.h"
+#include "../share/pzmq.h"
 #include "../share/config.h"
 
 static void *g_pub = NULL;
@@ -20,8 +21,8 @@ init_worker_pub(){
 
 	cfg = get_config();
     context = s_context();
-    assert(cfg->work_id == 0);
-    assert(cfg->worker_start_pub == NULL);
+    assert(cfg->work_id != 0);
+    assert(cfg->worker_start_pub != NULL);
     sprintf(addr,cfg->worker_start_pub,cfg->work_id);
     g_pub = zmq_socket (context, ZMQ_PUB);
     rc = zmq_bind (g_pub, addr);
@@ -36,7 +37,7 @@ init_worker_sub(){
 
 	cfg = get_config();
     context = s_context();
-    assert(cfg->work_id == 0);
+    assert(cfg->work_id != 0);
     sprintf(id,"%03d",cfg->work_id);
     g_sub = zmq_socket (context, ZMQ_SUB);
     zmq_setsockopt (context, ZMQ_SUBSCRIBE, "***", 3);
@@ -57,4 +58,8 @@ send_message_worker(char *id, char *msg){
 char *
 recv_message_worker(){
 	return s_recv(g_sub);
+}
+void *
+get_worker_sub(){
+	return g_sub;
 }

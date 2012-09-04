@@ -3,19 +3,20 @@
 
 start()
 {
-	./bin/masterd -c./bin/config.lua -b0 > log/MASTER 2>&1 &
-	
-	./bin/gated -c./bin/config.lua -b0 > log/GATE 2>&1 &
-	
-	./bin/workerd -c./bin/config.lua -b1 > log/WORKER1 2>&1 &
-	./bin/workerd -c./bin/config.lua -b1 > log/WORKER2 2>&1 &
-	./bin/workerd -c./bin/config.lua -b1 > log/WORKER3 2>&1 &
+	gnome-terminal -t MASTER -e './bin/masterd -c./bin/config.lua -b0'
+	sleep 0.5
+	gnome-terminal -t GATE -e   './bin/gated   -c./bin/config.lua -b0'
+	sleep 0.5
+	gnome-terminal -t WORKER -e './bin/workerd -c./bin/config.lua -b1'
+	gnome-terminal -t WORKER -e './bin/workerd -c./bin/config.lua -b1'
+	gnome-terminal -t WORKER -e './bin/workerd -c./bin/config.lua -b1'
 }
 
 stop()
 {
-	(ps aux | grep '/bin/gated' | awk '{print $2}' | xargs kill -10 &>/dev/null) || echo 'kill gated'
-	(ps aux | grep '/bin/workd' | awk '{print $2}' | xargs kill -10 &>/dev/null) || echo 'kill workd'
+	(ps aux | grep '/bin/workerd' | awk '{print $2}' | xargs kill -10 &>/dev/null) || echo 'kill workerd'
+	(ps aux | grep '/bin/gated'   | awk '{print $2}' | xargs kill -10 &>/dev/null) || echo 'kill gated'
+	(ps aux | grep '/bin/masterd' | awk '{print $2}' | xargs kill -10 &>/dev/null) || echo 'kill masterd'
 }
 
 case "$1" in		
