@@ -8,6 +8,9 @@
 #include <zmq.h>
 #include <stddef.h>
 
+#include "../share/gdef.h"
+#include "../share/config.h"
+
 static void *g_gate = NULL;
 
 void

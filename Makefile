@@ -19,8 +19,8 @@ ZMQ = zmq.so
 
 SHARERCS = pzmq.c config.c option.c utils.c log.c
 GATERCS = main.c client.c worker.c swap.c
-WORKERRCS = main.c
-MASTERRCS = main.c
+WORKERRCS = main.c gate.c master.c worker.c backend.c
+MASTERRCS = main.c gate.c worker.c backend.c
 
 LUA_ZMQ = lualib/zmq
 LUA_MONGO = lualib/mongo

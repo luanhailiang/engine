@@ -8,6 +8,7 @@
 
 #include "../share/gdef.h"
 #include "../share/pzmq.h"
+#include "../share/config.h"
 
 static void g_rep = NULL;
 static void g_pub = NULL;

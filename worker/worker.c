@@ -6,6 +6,7 @@
  */
 
 #include "../share/gdef.h"
+#include "../share/config.h"
 
 static void *g_pub = NULL;
 static void *g_sub = NULL;

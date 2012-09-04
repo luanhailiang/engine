@@ -18,4 +18,5 @@
 #include <assert.h>
 #include <signal.h>
 
+
 #endif /* GDEF_H_ */
