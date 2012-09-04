@@ -40,7 +40,7 @@ get_ip(){
 	ip = malloc(20);
 	memcpy(&sin, &ifr.ifr_addr, sizeof(sin));
 	sprintf(ip, "%s", inet_ntoa(sin.sin_addr));
-
+	close (sock);
 	return ip;
 }
 

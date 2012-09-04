@@ -64,27 +64,28 @@ load_config(){
 		lua_close(L);
 		exit(EXIT_FAILURE);
 	}
-	lua_getglobal(L,"client_port");
-	config->client_port = (int)lua_tonumber(L,-1);
+	lua_getglobal(L,"gate_client_port");
+	config->gate_client_port = (int)lua_tonumber(L,-1);
 	lua_pop(L,1);
-	lua_getglobal(L,"router_port");
-	config->router_port = (int)lua_tonumber(L,-1);
+
+	lua_getglobal(L,"worker_start_pub");
+	config->worker_start_pub = (char *)lua_tostring(L,-1);
 	lua_pop(L,1);
-	lua_getglobal(L,"worker_port");
-	config->worker_port = (int)lua_tonumber(L,-1);
+	lua_getglobal(L,"gate_work_router");
+	config->gate_work_router = (char *)lua_tostring(L,-1);
 	lua_pop(L,1);
 
 	lua_getglobal(L,"master_gate_pub");
 	config->master_gate_pub = (char *)lua_tostring(L,-1);
 	lua_pop(L,1);
-	lua_getglobal(L,"master_gate_push");
-	config->master_gate_push = (char *)lua_tostring(L,-1);
+	lua_getglobal(L,"master_gate_rep");
+	config->master_gate_rep = (char *)lua_tostring(L,-1);
 	lua_pop(L,1);
 	lua_getglobal(L,"master_work_pub");
 	config->master_work_pub = (char *)lua_tostring(L,-1);
 	lua_pop(L,1);
-	lua_getglobal(L,"master_work_push");
-	config->master_work_push = (char *)lua_tostring(L,-1);
+	lua_getglobal(L,"master_work_rep");
+	config->master_work_rep = (char *)lua_tostring(L,-1);
 	lua_pop(L,1);
 	lua_close(L);
 

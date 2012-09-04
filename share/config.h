@@ -13,14 +13,15 @@ typedef struct config_s{
 	int gate_id;
 	int work_id;
 
-	int client_port;
-	int router_port;
-	int worker_port;
+	int gate_client_port;
+
+	char *worker_start_pub;
+	char *gate_work_router;
 
 	char *master_gate_pub;
-	char *master_gate_push;
+	char *master_gate_rep;
 	char *master_work_pub;
-	char *master_work_push;
+	char *master_work_rep;
 
 	char *config_file;
 

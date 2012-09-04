@@ -5,12 +5,7 @@
  *      Author: luan
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stddef.h>
-#include <string.h>
 #include <fcntl.h>
-#include <errno.h>
 #include <sys/socket.h>
 #include <sys/epoll.h>
 #include <netinet/tcp.h>
@@ -18,6 +13,7 @@
 #include <signal.h>
 
 #include "client.h"
+#include "../share/gdef.h"
 #include "../share/config.h"
 
 int g_epollfd;
@@ -27,7 +23,7 @@ interactive_t g_sockets[MAX_LINK] = {0};
  * clear break socket
  */
 static void
-remove_interactive(interactive_t *ip){
+_remove_interactive(interactive_t *ip){
 	struct epoll_event ev;
 	memset(&ev,0,sizeof(ev));
 	if(epoll_ctl(g_epollfd, EPOLL_CTL_DEL, ip->fd , &ev)==-1){
@@ -42,12 +38,12 @@ remove_interactive(interactive_t *ip){
  * flush message in send buff
  */
 static int
-flush_message(interactive_t *ip){
+_flush_message(interactive_t *ip){
 	int bytes;
 	int length;
 	int num = 0;
 	if(ip->flag & S_LINKDEAD){
-		fprintf(stderr,"flush_message:Try flush a closed socket\n");
+		fprintf(stderr,"_flush_message:Try flush a closed socket\n");
 		return 0;
 	}
 	while(ip->send_len != 0){
@@ -58,16 +54,16 @@ flush_message(interactive_t *ip){
 		}
 		bytes = send(ip->fd,ip->send_buf+ip->send_bgn,length,0);
 		if(!bytes){
-			remove_interactive(ip);
+			_remove_interactive(ip);
 			return 0;
 		}
 		if(bytes == -1){
-			perror("flush_message:send");
+			perror("_flush_message:send");
 			/* Try again */
 			if(EAGAIN == errno){
 				return 1;
 			}
-			remove_interactive(ip);
+			_remove_interactive(ip);
 			return 0;
 		}
 		ip->send_bgn = (ip->send_bgn + bytes) % MAX_BUFF;
@@ -80,7 +76,7 @@ flush_message(interactive_t *ip){
  * receive message from socket
  */
 static void
-recv_message(interactive_t *ip){
+_recv_message(interactive_t *ip){
 	int bytes;
 	int space;
 	space = MAX_BUFF - ip->recv_end;
@@ -104,17 +100,17 @@ recv_message(interactive_t *ip){
 	bytes = recv(ip->fd,ip->recv_buf+ip->recv_end,space,0);
 	/* tried to read from closing fd */
 	if(!bytes){
-		remove_interactive(ip);
+		_remove_interactive(ip);
 		return;
 	}
 	/* error read from fd */
 	if(bytes == -1){
-		perror("recv_message:recv");
+		perror("_recv_message:recv");
 		/* Try again */
 		if(EAGAIN == errno){
 			return;
 		}
-		remove_interactive(ip);
+		_remove_interactive(ip);
 		return;
 	}
 	ip->recv_end += bytes;
@@ -123,7 +119,7 @@ recv_message(interactive_t *ip){
  * clean receive buff illegal char
  */
 static int
-clean_buf(interactive_t *ip){
+_clean_buf(interactive_t *ip){
     /* skip null input */
     while (ip->recv_bgn < ip->recv_end && !*(ip->recv_buf + ip->recv_bgn)){
     	ip->recv_bgn++;
@@ -139,7 +135,7 @@ clean_buf(interactive_t *ip){
  * socket set nonblocking
  */
 static int
-set_nonblocking(int fd){
+_set_nonblocking(int fd){
 	int opts;
 
 	opts=fcntl(fd,F_GETFL);
@@ -159,7 +155,7 @@ set_nonblocking(int fd){
  * socket break check
  */
 static int
-set_keepalive (int fd){
+_set_keepalive (int fd){
 	int alive, idle, intv, cnt;
 
 	alive = 1;
@@ -191,7 +187,7 @@ set_keepalive (int fd){
  * let bind port useful when restart
  */
 static int
-set_reuseaddr(int fd){
+_set_reuseaddr(int fd){
 	int optval = 1;
     if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) == -1){
     	perror("set socket reuseaddr");
@@ -201,7 +197,7 @@ set_reuseaddr(int fd){
 }
 
 static void
-accept_client(int listen){
+_accept_client(int listen){
 	int addrlen;
 	int conn_sock;
 	struct epoll_event ev;
@@ -222,8 +218,8 @@ accept_client(int listen){
     g_sockets[conn_sock].type = SK_TYPE_CLIENT;
     g_sockets[conn_sock].flag = S_LOGINING;
     g_sockets[conn_sock].addr = local;
-    set_nonblocking(conn_sock);
-    set_keepalive(conn_sock);
+    _set_nonblocking(conn_sock);
+    _set_keepalive(conn_sock);
     ev.events = EPOLLIN;
     ev.data.fd = conn_sock;
     if (epoll_ctl(g_epollfd, EPOLL_CTL_ADD, conn_sock, &ev) == -1) {
@@ -235,15 +231,19 @@ accept_client(int listen){
  * handle all message
  */
 static void
-process_client(int fd){
+_process_client(int fd){
 	interactive_t *ip;
 	ip = &g_sockets[fd];
 	/* Maybe closed by send error */
 	if(ip->flag & S_LINKDEAD){
 		return;
 	}
-	recv_message(ip);
+	_recv_message(ip);
 }
+
+
+
+
 /**
  * init listen socket
  */
@@ -255,7 +255,7 @@ init_client_bind(){
 	struct sockaddr_in my_addr;
 	/* set listen port */
 	config_t *cfg = get_config();
-   	myport = cfg->client_port + cfg->gate_id;
+   	myport = cfg->gate_client_port;
 	/* set pipe signal */
     if(signal(SIGPIPE, SIG_IGN) == SIG_ERR){
     	perror("signal");
@@ -268,11 +268,11 @@ init_client_bind(){
 		exit(EXIT_FAILURE);
 	}
 	/* set socket nonblocking */
-	if(set_nonblocking(listen_sock) == -1){
+	if(_set_nonblocking(listen_sock) == -1){
 		exit(EXIT_FAILURE);
 	}
 	/* set listen port reuse */
-	if(set_reuseaddr(listen_sock) == -1){
+	if(_set_reuseaddr(listen_sock) == -1){
 		exit(EXIT_FAILURE);
 	}
 	/* bind socket on port */
@@ -313,10 +313,10 @@ process_io(struct epoll_event *ev){
 	ip = &g_sockets[ev->data.fd];
 	switch(ip->type){
 		case SK_TYPE_LISTEN:
-			accept_client(ev->data.fd);
+			_accept_client(ev->data.fd);
 			return NULL;
 		case SK_TYPE_CLIENT:
-			process_client(ev->data.fd);
+			_process_client(ev->data.fd);
 			return ip;
 		default:
 			//TODO log
@@ -332,12 +332,12 @@ void
 add_message(interactive_t *ip, char *msg, int len){
 	int i;
 	if(ip->send_len+len > MAX_BUFF){
-		if(!flush_message(ip)){
+		if(!_flush_message(ip)){
 			fprintf(stderr,"add_message:Broken connection\n");
 			return;
 		}
 		if(ip->send_len+len > MAX_BUFF){
-			fprintf(stderr,"add_mesage:flush_message fail "
+			fprintf(stderr,"add_mesage:_flush_message fail "
 					"lose this message %d bytes\n",len);
 			return;
 		}
@@ -359,7 +359,7 @@ add_message(interactive_t *ip, char *msg, int len){
 	}
 #endif
 	if(ip->send_len > MAX_BUFF/2){
-		flush_message(ip);
+		_flush_message(ip);
 	}
 }
 /**
@@ -371,7 +371,7 @@ first_cmd_in_buf(interactive_t *ip){
     char *temp;
 
     /* do standard input buffer cleanup */
-    if (!clean_buf(ip)){
+    if (!_clean_buf(ip)){
     	return 0;
     }
     /* search for the newline */

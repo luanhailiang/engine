@@ -8,10 +8,7 @@
 #ifndef OPTION_H_
 #define OPTION_H_
 
-#define OPT_MASTER	1
-#define OPT_GATE	2
-#define OPT_WORKER	3
 
-void handle_args_opt(int argc, char **argv, int type);
+void handle_args_opt(int argc, char **argv);
 
 #endif /* OPTION_H_ */

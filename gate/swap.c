@@ -5,12 +5,10 @@
  *      Author: luan
  */
 
-#include <zmq.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <stdio.h>
+
 #include "client.h"
 #include "worker.h"
+#include "../share/gdef.h"
 
 static void
 _handle_client_message(interactive_t *ip, char *cmd){
@@ -25,7 +23,7 @@ _handle_client_message(interactive_t *ip, char *cmd){
 		case S_READY:
 			break;
 	}
-	send_message("A", "123", cmd);
+	send_message_worker("001", "123", cmd);
 }
 
 static void
@@ -61,7 +59,7 @@ start_loop(){
         		_handle_client_message(ip,msg);
         	}
         }
-        while((msg = recv_message()) != NULL){
+        while((msg = recv_message_worker()) != NULL){
         	_handle_worker_message(msg);
         	free(msg);
         }
