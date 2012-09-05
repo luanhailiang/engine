@@ -18,5 +18,7 @@
 #include <assert.h>
 #include <signal.h>
 
+#include <time.h>
+#include <sys/time.h>
 
 #endif /* GDEF_H_ */

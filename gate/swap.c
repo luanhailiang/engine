@@ -30,9 +30,13 @@ _handle_client_message(interactive_t *ip, char *cmd){
 static void
 _handle_worker_message(char *msg){
 	//TODO handle message
-	printf("-->%s\n",msg);
+	printf("worker-->%s\n",msg);
 }
-
+static void
+_handle_master_message(char *msg){
+	//TODO handle message
+	printf("master-->%s\n",msg);
+}
 void
 start_loop(){
 	int n;
@@ -49,7 +53,7 @@ start_loop(){
     /* start loop */
 	printf("process start loop handle message\n");
     while(1){
-        nfds = epoll_wait(g_epollfd, events, MAX_EVENTS, 1);
+        nfds = epoll_wait(g_epollfd, events, MAX_EVENTS, 1000);
         if (nfds == -1) {
         	if(errno == EINTR){
         		continue;
@@ -70,5 +74,14 @@ start_loop(){
         	_handle_worker_message(msg);
         	free(msg);
         }
+        while((msg = recv_message_master()) != NULL){
+        	_handle_master_message(msg);
+        	free(msg);
+        }
+        while((msg = back_message_master()) != NULL){
+        	_handle_master_message(msg);
+        	free(msg);
+        }
+        send_message_master("my ask");
     }
 }

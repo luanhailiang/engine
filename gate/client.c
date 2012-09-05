@@ -384,6 +384,9 @@ first_cmd_in_buf(interactive_t *ip){
     if(*p != '\n'){
     	return 0;
     }
+    if(*(p-1) == '\r'){
+    	*(p-1) = '\0';
+    }
     *p = '\0';
     temp = p+1;
     p = ip->recv_buf+ip->recv_bgn;

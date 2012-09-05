@@ -10,7 +10,7 @@
 
 void init_gate_rep();
 void init_gate_pub();
-void send_message_gate(char *id, char *msg);
+void send_message_gate(char *msg);
 char *recv_message_gate();
 void back_message_gate(char *msg);
 void *get_gate_rep();

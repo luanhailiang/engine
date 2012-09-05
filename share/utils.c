@@ -17,10 +17,9 @@
 #include <arpa/inet.h>
 #include <errno.h>
 
-#define ETH_NAME	"wlan0"
 
 char *
-get_ip(){
+get_ip(char *eth_name){
 	char *ip;
 	int sock;
 	struct sockaddr_in sin;
@@ -31,7 +30,7 @@ get_ip(){
 		perror("socket");
 		return NULL;
 	}
-	strncpy(ifr.ifr_name, ETH_NAME, IFNAMSIZ);
+	strncpy(ifr.ifr_name, eth_name, IFNAMSIZ);
 	ifr.ifr_name[IFNAMSIZ - 1] = 0;
 	if (ioctl(sock, SIOCGIFADDR, &ifr) < 0){
 		perror("ioctl");

@@ -31,10 +31,11 @@ void backend(){
 	// Process messages from both sockets
 	while (1) {
 		zmq_msg_t message;
-		zmq_poll (items, 2, -1);
+		zmq_poll (items, 2, 1000);
 		if (items [0].revents & ZMQ_POLLIN) {
 			zmq_msg_init (&message);
 			zmq_recvmsg (gate_rep, &message, 0);
+			zmq_sendmsg (gate_rep, &message, 0);
 			// Process task
 			printf("GATE:%s\n",(char *)zmq_msg_data (&message));
 			zmq_msg_close (&message);
@@ -46,5 +47,6 @@ void backend(){
 			printf("WORK:%s\n",(char *)zmq_msg_data (&message));
 			zmq_msg_close (&message);
 		}
+		//send_message_gate("luanqibazao");
 	}
 }

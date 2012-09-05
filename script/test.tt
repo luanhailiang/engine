@@ -1,0 +1,11 @@
+#!/usr/games/tt++
+
+#MACRO {\e[15~}
+{
+	#ses test 127.0.0.1 6000;
+}
+
+#MACRO {\e[17~}
+{
+	luanhailiang;
+}

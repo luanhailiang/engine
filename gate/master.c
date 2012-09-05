@@ -49,30 +49,21 @@ init_master_req(){
 void
 init_master_sub(){
 	int rc;
-	char id[5];
 	void *context;
 	config_t *cfg;
 
 	cfg = get_config();
     context = s_context();
-    assert(cfg->gate_id != 0);
-    sprintf(id,"%03d",cfg->gate_id);
     assert(cfg->master_gate_pub != NULL);
     g_sub = zmq_socket (context, ZMQ_SUB);
-    zmq_setsockopt (context, ZMQ_SUBSCRIBE, "***", 3);
-	zmq_setsockopt (context, ZMQ_SUBSCRIBE, id, strlen(id));
+    zmq_setsockopt (g_sub, ZMQ_SUBSCRIBE, "", 0);
     rc = zmq_connect (g_sub, cfg->master_gate_pub);
     assert(rc == 0);
     printf("Worker master subscribe connect on %s ready\n",cfg->master_gate_pub);
 }
 void
 init_master_connect(){
-	char *msg;
 	init_master_req();
-	send_message_master("query my id");
-	msg = wait_message_master();
-	printf("------------>%s\n",msg);
-	return;
 	init_master_sub();
 }
 

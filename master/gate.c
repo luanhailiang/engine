@@ -13,11 +13,9 @@ static void *g_rep = NULL;
 static void *g_pub = NULL;
 
 void
-send_message_gate(char *id, char *msg){
-	s_sendm(g_pub,id);
+send_message_gate( char *msg){
 	s_send(g_pub,msg);
 }
-
 char *
 recv_message_gate(){
 	return s_recv(g_rep);

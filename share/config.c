@@ -29,7 +29,7 @@ get_config(){
 void set_work_id(int id){
 	config_t * config = get_config();
 	config->work_id = id;
-	printf("System id is :%d\n",id);
+	printf("Worker id is :%d\n",id);
 }
 
 void set_gate_id(int gate){
@@ -68,6 +68,10 @@ load_config(){
 	config->gate_client_port = (int)lua_tonumber(L,-1);
 	lua_pop(L,1);
 
+	lua_getglobal(L,"heart_beat_time");
+	config->heart_beat_time = (int)lua_tonumber(L,-1);
+	lua_pop(L,1);
+
 	lua_getglobal(L,"worker_start_pub");
 	config->worker_start_pub = (char *)lua_tostring(L,-1);
 	lua_pop(L,1);
@@ -87,6 +91,10 @@ load_config(){
 	lua_getglobal(L,"master_work_rep");
 	config->master_work_rep = (char *)lua_tostring(L,-1);
 	lua_pop(L,1);
+
+	lua_getglobal(L,"eth_name");
+	config->eth_name = (char *)lua_tostring(L,-1);
+	lua_pop(L,1);
 	//lua_close(L);
-	config->ip = get_ip();
+	config->ip = get_ip(config->eth_name);
 }

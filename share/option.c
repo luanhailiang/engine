@@ -39,13 +39,16 @@ handle_args_opt(int argc, char **argv){
 	int c;
 	int gate = 0;
 	int work = 0;
-	while ((c = getopt(argc, argv, "c: b:")) != EOF){
+	while ((c = getopt(argc, argv, "c: b: w:")) != EOF){
 		switch (c){
 		case 'c':
 			set_cfg_dir(optarg);
 			break;
 		case 'b':
 			_bind_cpu(atoi(optarg));
+			break;
+		case 'w':
+			set_work_id(atoi(optarg));
 			break;
 		default:
 			printf("Unknown option '%c'.", c);

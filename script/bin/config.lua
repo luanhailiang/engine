@@ -18,4 +18,8 @@ master_work_rep 	= "tcp://127.0.0.1:5003"
 master_work_pub 	= "tcp://127.0.0.1:5004"
 
 
-		   
+--heart beat time
+heart_beat_time		= 1000000
+
+--Network card name 
+eth_name			= "eth0"

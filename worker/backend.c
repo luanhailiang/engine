@@ -11,15 +11,42 @@
 #include "worker.h"
 #include "master.h"
 #include "../share/gdef.h"
+#include "../share/config.h"
+
+static void
+_sig_alrm(int sigo){
+
+}
+static int
+_ualarm (int usecs, int reload) {
+    struct itimerval new, old;
+    new.it_interval.tv_usec = reload % 1000000;
+    new.it_interval.tv_sec = reload / 1000000;
+
+    new.it_value.tv_usec = usecs % 1000000;
+    new.it_value.tv_sec = usecs / 1000000;
+
+    if (setitimer(ITIMER_REAL, &new, &old) == 0)
+    	return old.it_value.tv_sec * 1000000 + old.it_value.tv_usec;
+    /* else */
+    return -1;
+}
 
 void backend(){
 	void *master_rep;
 	void *master_sub;
 	void *worker_sub;
 	void *gate_dealer;
+	config_t *cfg;
 
 	//connect master
 	init_master_connect();
+
+    if(signal(SIGALRM,_sig_alrm) == SIG_ERR){
+    	exit(1);
+    }
+    cfg = get_config();
+    _ualarm(cfg->heart_beat_time,cfg->heart_beat_time);
 
 	init_gate_connect();
 	init_worker_pub();
@@ -40,7 +67,7 @@ void backend(){
 	// Process messages from both sockets
 	while (1) {
 		zmq_msg_t message;
-		zmq_poll (items, 4, -1);
+		zmq_poll (items, 4, 1000);
 		if (items [0].revents & ZMQ_POLLIN) {
 			zmq_msg_init (&message);
 			zmq_recvmsg (master_sub, &message, 0);
@@ -66,7 +93,10 @@ void backend(){
 			zmq_msg_init (&message);
 			zmq_recvmsg (gate_dealer, &message, 0);
 			// Process weather update
-			printf("GATE_DEALER:%s\n",(char *)zmq_msg_data (&message));
+			printf("GATE_DEALER:%d:%s\n",
+					(int)zmq_msg_size (&message),
+					(char *)zmq_msg_data (&message));
+			zmq_sendmsg (gate_dealer, &message, 0);
 			zmq_msg_close (&message);
 		}
 	}

@@ -8,6 +8,6 @@
 #ifndef UTILS_H_
 #define UTILS_H_
 
-char *get_ip();
+char *get_ip(char *eth_name);
 
 #endif /* UTILS_H_ */

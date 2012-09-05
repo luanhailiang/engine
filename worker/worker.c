@@ -40,9 +40,9 @@ init_worker_sub(){
     assert(cfg->work_id != 0);
     sprintf(id,"%03d",cfg->work_id);
     g_sub = zmq_socket (context, ZMQ_SUB);
-    zmq_setsockopt (context, ZMQ_SUBSCRIBE, "***", 3);
-	zmq_setsockopt (context, ZMQ_SUBSCRIBE, id, strlen(id));
-	printf("Worker worker sub is ready\n");
+    zmq_setsockopt (g_sub, ZMQ_SUBSCRIBE, "***", 3);
+	zmq_setsockopt (g_sub, ZMQ_SUBSCRIBE, id, strlen(id));
+	printf("Worker worker sub %s is ready\n",id);
 }
 void
 worker_sub_connect(char *addr){

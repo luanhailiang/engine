@@ -15,6 +15,8 @@ typedef struct config_s{
 
 	int gate_client_port;
 
+	int heart_beat_time;
+
 	char *worker_start_pub;
 	char *gate_work_router;
 
@@ -25,6 +27,7 @@ typedef struct config_s{
 
 	char *config_file;
 
+	char *eth_name;
 	char *ip;
 }config_t;
 
