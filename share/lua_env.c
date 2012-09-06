@@ -40,8 +40,8 @@ init_lua_state(char *file, char *path, char *cpath){
 
 void
 reg_function(char *name, void *func){
-	lua_pushcfunction(L,func) ;
-	lua_setglobal(L,name) ;
+	lua_pushcfunction(L,func);
+	lua_setglobal(L,name);
 }
 
 void
