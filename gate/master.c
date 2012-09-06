@@ -23,14 +23,17 @@ char *
 recv_message_master(){
 	return s_recv(g_sub);
 }
+
 char *
 back_message_master(){
 	return s_recv(g_req);
 }
+
 char *
 wait_message_master(){
 	return s_recvb(g_req);
 }
+
 void
 init_master_req(){
 	int rc;
@@ -61,6 +64,7 @@ init_master_sub(){
     assert(rc == 0);
     printf("Worker master subscribe connect on %s ready\n",cfg->master_gate_pub);
 }
+
 void
 init_master_connect(){
 	init_master_req();

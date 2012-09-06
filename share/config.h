@@ -14,8 +14,12 @@ typedef struct config_s{
 	int work_id;
 
 	int gate_client_port;
-
 	int heart_beat_time;
+
+	char *ip;
+	char *eth_name;
+	char *config_file;
+
 
 	char *worker_start_pub;
 	char *gate_work_router;
@@ -25,10 +29,25 @@ typedef struct config_s{
 	char *master_work_pub;
 	char *master_work_rep;
 
-	char *config_file;
 
-	char *eth_name;
-	char *ip;
+	char *master_lua_file;
+	char *master_lua_path;
+	char *master_lua_cpath;
+
+	char *master_lua_beat;
+	char *master_lua_gate;
+	char *master_lua_worker;
+
+
+	char *worker_lua_file;
+	char *worker_lua_path;
+	char *worker_lua_cpath;
+
+	char *worker_lua_beat;
+	char *worker_lua_master;
+	char *worker_lua_player;
+	char *worker_lua_worker;
+
 }config_t;
 
 void load_config();

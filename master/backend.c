@@ -9,7 +9,19 @@
 #include "worker.h"
 #include "../share/gdef.h"
 
+static void
+_handle_gate_message(char * msg){
+	//TODO handle message
+	printf("Master from gate : %s\n",msg);
+}
+static void
+_handle_worker_message(char * msg){
+	//TODO handle message
+	printf("Master from worker : %s\n",msg);
+}
 void backend(){
+	char *msg;
+
 	void *gate_rep;
 	void *work_rep;
 
@@ -33,20 +45,16 @@ void backend(){
 		zmq_msg_t message;
 		zmq_poll (items, 2, 1000);
 		if (items [0].revents & ZMQ_POLLIN) {
-			zmq_msg_init (&message);
-			zmq_recvmsg (gate_rep, &message, 0);
-			zmq_sendmsg (gate_rep, &message, 0);
-			// Process task
-			printf("GATE:%s\n",(char *)zmq_msg_data (&message));
-			zmq_msg_close (&message);
+	        while((msg = recv_message_gate()) != NULL){
+	        	_handle_gate_message(msg);
+	        	free(msg);
+	        }
 		}
 		if (items [1].revents & ZMQ_POLLIN) {
-			zmq_msg_init (&message);
-			zmq_recvmsg (work_rep, &message, 0);
-			// Process weather update
-			printf("WORK:%s\n",(char *)zmq_msg_data (&message));
-			zmq_msg_close (&message);
+	        while((msg = recv_message_work()) != NULL){
+	        	_handle_worker_message(msg);
+	        	free(msg);
+	        }
 		}
-		//send_message_gate("luanqibazao");
 	}
 }

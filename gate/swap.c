@@ -30,13 +30,15 @@ _handle_client_message(interactive_t *ip, char *cmd){
 static void
 _handle_worker_message(char *msg){
 	//TODO handle message
-	printf("worker-->%s\n",msg);
+	printf("Gate from worker : %s\n",msg);
 }
+
 static void
 _handle_master_message(char *msg){
 	//TODO handle message
-	printf("master-->%s\n",msg);
+	printf("Gate from master : %s\n",msg);
 }
+
 void
 start_loop(){
 	int n;
@@ -82,6 +84,5 @@ start_loop(){
         	_handle_master_message(msg);
         	free(msg);
         }
-        send_message_master("my ask");
     }
 }

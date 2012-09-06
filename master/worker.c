@@ -13,6 +13,11 @@
 static void *g_rep = NULL;
 static void *g_pub = NULL;
 
+void *
+get_work_rep(){
+	return g_rep;
+}
+
 void
 send_message_work(char *id, char *msg){
 	s_sendm(g_pub,id);
@@ -23,6 +28,7 @@ char *
 recv_message_work(){
 	return s_recv(g_rep);
 }
+
 void
 back_message_work(char *msg){
 	s_send(g_rep,msg);
@@ -57,9 +63,4 @@ init_work_pub(){
     rc = zmq_bind (g_pub, cfg->master_work_pub);
     assert(rc == 0);
     printf("Master work publish bind on %s ready\n",cfg->master_work_pub);
-}
-
-void *
-get_work_rep(){
-	return g_rep;
 }

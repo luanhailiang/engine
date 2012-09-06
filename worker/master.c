@@ -15,6 +15,15 @@
 static void *g_req = NULL;
 static void *g_sub = NULL;
 
+void *
+get_master_sub(){
+	return g_sub;
+}
+void *
+get_master_req(){
+	return g_req;
+}
+
 void
 send_message_master(char *msg){
 	s_send(g_req,msg);
@@ -24,14 +33,17 @@ char *
 recv_message_master(){
 	return s_recv(g_sub);
 }
+
 char *
 back_message_master(){
 	return s_recv(g_req);
 }
+
 char *
 wait_message_master(){
 	return s_recvb(g_req);
 }
+
 void
 init_master_req(){
 	int rc;
@@ -71,12 +83,4 @@ void
 init_master_connect(){
 	init_master_req();
 	init_master_sub();
-}
-void *
-get_master_sub(){
-	return g_sub;
-}
-void *
-get_master_req(){
-	return g_req;
 }

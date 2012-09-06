@@ -12,14 +12,21 @@
 static void *g_rep = NULL;
 static void *g_pub = NULL;
 
+void *
+get_gate_rep(){
+	return g_rep;
+}
+
 void
 send_message_gate( char *msg){
 	s_send(g_pub,msg);
 }
+
 char *
 recv_message_gate(){
 	return s_recv(g_rep);
 }
+
 void
 back_message_gate(char *msg){
 	s_send(g_rep,msg);
@@ -55,7 +62,4 @@ init_gate_pub(){
     printf("Master gate publish bind on %s ready\n",cfg->master_gate_pub);
 }
 
-void *
-get_gate_rep(){
-	return g_rep;
-}
+

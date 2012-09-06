@@ -109,10 +109,10 @@ master : $(MASTER_O) $(SHARE_O)
 	
 lib : $(SHARE_O)
 
-zmq:
+zmq: $(BUILD)
 	$(MAKE) -C $(LUA_ZMQ)
 
-mongo:
+mongo: $(BUILD)
 	$(MAKE) -C $(LUA_MONGO)
 
 install: all

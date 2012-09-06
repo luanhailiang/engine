@@ -12,6 +12,28 @@
 static void *g_pub = NULL;
 static void *g_sub = NULL;
 
+void *
+get_worker_sub(){
+	return g_sub;
+}
+
+void
+worker_sub_connect(char *addr){
+	assert(g_sub == NULL);
+	zmq_connect (g_sub, addr);
+}
+
+void
+send_message_worker(char *id, char *msg){
+	s_sendm(g_pub,id);
+	s_send(g_pub,msg);
+}
+
+char *
+recv_message_worker(){
+	return s_recv(g_sub);
+}
+
 void
 init_worker_pub(){
 	int rc;
@@ -29,6 +51,7 @@ init_worker_pub(){
     assert(rc == 0);
     printf("Worker worker pub bind on %s ready\n",addr);
 }
+
 void
 init_worker_sub(){
 	char id[5];
@@ -44,22 +67,5 @@ init_worker_sub(){
 	zmq_setsockopt (g_sub, ZMQ_SUBSCRIBE, id, strlen(id));
 	printf("Worker worker sub %s is ready\n",id);
 }
-void
-worker_sub_connect(char *addr){
-	assert(g_sub == NULL);
-	zmq_connect (g_sub, addr);
-}
-void
-send_message_worker(char *id, char *msg){
-	s_sendm(g_pub,id);
-	s_send(g_pub,msg);
-}
 
-char *
-recv_message_worker(){
-	return s_recv(g_sub);
-}
-void *
-get_worker_sub(){
-	return g_sub;
-}
+

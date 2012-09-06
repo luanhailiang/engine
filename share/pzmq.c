@@ -31,6 +31,7 @@ s_recv (void *socket) {
     string [size] = 0;
     return (string);
 }
+
 inline char *
 s_recvb (void *socket) {
     zmq_msg_t message;

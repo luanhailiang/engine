@@ -32,15 +32,30 @@ _ualarm (int usecs, int reload) {
     return -1;
 }
 
+static void
+_handle_master_message(char *msg){
+	//TODO handle message
+	printf("Worker from master : %s\n",msg);
+}
+static void
+_handle_worker_message(char *msg){
+	//TODO handle message
+	printf("Worker from worker : %s\n",msg);
+}
+static void
+_handle_gate_message(char *msg){
+	//TODO handle message
+	printf("Worker from gate : %s\n",msg);
+}
+
 void backend(){
+	char *msg;
+
 	void *master_rep;
 	void *master_sub;
 	void *worker_sub;
 	void *gate_dealer;
 	config_t *cfg;
-
-	//connect master
-	init_master_connect();
 
     if(signal(SIGALRM,_sig_alrm) == SIG_ERR){
     	exit(1);
@@ -48,6 +63,8 @@ void backend(){
     cfg = get_config();
     _ualarm(cfg->heart_beat_time,cfg->heart_beat_time);
 
+	//Initialize socket connects
+	init_master_connect();
 	init_gate_connect();
 	init_worker_pub();
 	init_worker_sub();
@@ -69,35 +86,28 @@ void backend(){
 		zmq_msg_t message;
 		zmq_poll (items, 4, 1000);
 		if (items [0].revents & ZMQ_POLLIN) {
-			zmq_msg_init (&message);
-			zmq_recvmsg (master_sub, &message, 0);
-			// Process task
-			printf("MASTER_SUB:%s\n",(char *)zmq_msg_data (&message));
-			zmq_msg_close (&message);
+	        while((msg = recv_message_master()) != NULL){
+	        	_handle_master_message(msg);
+	        	free(msg);
+	        }
 		}
 		if (items [1].revents & ZMQ_POLLIN) {
-			zmq_msg_init (&message);
-			zmq_recvmsg (master_rep, &message, 0);
-			// Process weather update
-			printf("MASTER_REP:%s\n",(char *)zmq_msg_data (&message));
-			zmq_msg_close (&message);
+	        while((msg = back_message_master()) != NULL){
+	        	_handle_master_message(msg);
+	        	free(msg);
+	        }
 		}
 		if (items [2].revents & ZMQ_POLLIN) {
-			zmq_msg_init (&message);
-			zmq_recvmsg (worker_sub, &message, 0);
-			// Process weather update
-			printf("WORKER_SUB:%s\n",(char *)zmq_msg_data (&message));
-			zmq_msg_close (&message);
+	        while((msg = recv_message_worker()) != NULL){
+	        	_handle_worker_message(msg);
+	        	free(msg);
+	        }
 		}
 		if (items [3].revents & ZMQ_POLLIN) {
-			zmq_msg_init (&message);
-			zmq_recvmsg (gate_dealer, &message, 0);
-			// Process weather update
-			printf("GATE_DEALER:%d:%s\n",
-					(int)zmq_msg_size (&message),
-					(char *)zmq_msg_data (&message));
-			zmq_sendmsg (gate_dealer, &message, 0);
-			zmq_msg_close (&message);
+	        while((msg = recv_message_gate()) != NULL){
+	        	_handle_gate_message(msg);
+	        	free(msg);
+	        }
 		}
 	}
 }
