@@ -115,6 +115,7 @@ load_config(){
 			{"worker_lua_player",	&(cfg->worker_lua_player)},
 			{"worker_lua_worker",	&(cfg->worker_lua_worker)},
 
+			{"log_directory",		&(cfg->log_directory)},
 			{NULL,NULL}
 	};
 	int i;

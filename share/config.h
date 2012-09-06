@@ -48,6 +48,7 @@ typedef struct config_s{
 	char *worker_lua_player;
 	char *worker_lua_worker;
 
+	char *log_directory;
 }config_t;
 
 void load_config();
