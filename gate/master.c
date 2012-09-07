@@ -11,12 +11,22 @@
 #include "../share/pzmq.h"
 #include "../share/config.h"
 
-static void *g_req = NULL;
 static void *g_sub = NULL;
+static void *g_dealer = NULL;
+
+void *
+get_master_sub(){
+	return g_sub;
+}
+
+void *
+get_master_dealer(){
+	return g_dealer;
+}
 
 void
 send_message_master(char *msg){
-	s_send(g_req,msg);
+	s_send(g_dealer,msg);
 }
 
 char *
@@ -26,27 +36,27 @@ recv_message_master(){
 
 char *
 back_message_master(){
-	return s_recv(g_req);
+	return s_recv(g_dealer);
 }
 
-char *
-wait_message_master(){
-	return s_recvb(g_req);
-}
 
 void
-init_master_req(){
+init_master_dealer(){
 	int rc;
+	char id[5];
 	void *context;
 	config_t *cfg;
 
 	cfg = get_config();
     context = s_context();
-    assert(cfg->master_gate_rep != NULL);
-    g_req = zmq_socket (context, ZMQ_REQ);
-    rc = zmq_connect (g_req, cfg->master_gate_rep);
+    assert(cfg->gate_id != 0);
+    sprintf(id,"%03d",cfg->gate_id);
+    assert(cfg->master_gate_router != NULL);
+    g_dealer = zmq_socket (context, ZMQ_DEALER);
+    zmq_setsockopt (g_dealer, ZMQ_IDENTITY, id, strlen(id));
+    rc = zmq_connect (g_dealer, cfg->master_gate_router);
     assert(rc == 0);
-    printf("Worker master request connect on %s ready\n",cfg->master_gate_rep);
+    printf("Worker master request connect on %s ready\n",cfg->master_gate_router);
 }
 
 void
@@ -67,7 +77,7 @@ init_master_sub(){
 
 void
 init_master_connect(){
-	init_master_req();
+	init_master_dealer();
 	init_master_sub();
 }
 

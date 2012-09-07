@@ -9,42 +9,64 @@
 #include "../share/pzmq.h"
 #include "../share/config.h"
 
-static void *g_rep = NULL;
 static void *g_pub = NULL;
+static void *g_router = NULL;
+
+static char *g_last = NULL;
 
 void *
-get_gate_rep(){
-	return g_rep;
+get_gate_router(){
+	return g_router;
+}
+void
+clear_last_gate(){
+	if(g_last != NULL){
+		free(g_last);
+		g_last=NULL;
+	}
 }
 
 void
-send_message_gate( char *msg){
+pub_message_gate(const char *msg){
 	s_send(g_pub,msg);
+}
+
+void
+send_message_gate(char *id, const char *msg){
+	s_sendm(g_router,id);
+	s_send(g_router,msg);
 }
 
 char *
 recv_message_gate(){
-	return s_recv(g_rep);
+	if(g_last != NULL){
+		free(g_last);
+		g_last=NULL;
+	}
+	g_last = s_recv(g_router);
+	return s_recv(g_router);
 }
 
 void
-back_message_gate(char *msg){
-	s_send(g_rep,msg);
+back_message_gate(const char *msg){
+	assert(g_last != NULL);
+	s_sendm(g_router,g_last);
+	s_send(g_router,msg);
 }
 
 void
-init_gate_rep(){
+init_gate_router(){
 	int rc;
 	void *context;
 	config_t *cfg;
 
 	cfg = get_config();
     context = s_context();
-    assert(cfg->master_gate_rep != NULL);
-    g_rep = zmq_socket (context, ZMQ_REP);
-    rc = zmq_bind (g_rep, cfg->master_gate_rep);
+    assert(cfg->master_gate_router != NULL);
+    g_router = zmq_socket (context, ZMQ_ROUTER);
+    rc = zmq_bind (g_router, cfg->master_gate_router);
     assert(rc == 0);
-    printf("Master gate reply bind on %s ready\n",cfg->master_gate_rep);
+    printf("Master gate reply bind on %s ready\n",cfg->master_gate_router);
 }
 
 void

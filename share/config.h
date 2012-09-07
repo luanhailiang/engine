@@ -23,11 +23,12 @@ typedef struct config_s{
 
 	char *worker_start_pub;
 	char *gate_work_router;
+	char *gate_work_pull;
 
 	char *master_gate_pub;
-	char *master_gate_rep;
+	char *master_gate_router;
 	char *master_work_pub;
-	char *master_work_rep;
+	char *master_work_router;
 
 
 	char *master_lua_file;

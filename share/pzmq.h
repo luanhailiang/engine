@@ -9,8 +9,7 @@
 #define PZMQ_H_
 void *s_context();
 inline char * s_recv (void *socket);
-inline char * s_recvb (void *socket);
-inline int s_send (void *socket, char *string);
-inline int s_sendm (void *socket, char *string);
+inline int s_send (void *socket,const char *string);
+inline int s_sendm (void *socket,const char *string);
 
 #endif /* PZMQ_H_ */

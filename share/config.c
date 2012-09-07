@@ -90,13 +90,13 @@ load_config(){
 			{"eth_name",			&(cfg->eth_name)},
 			{"gate_client_port",	&(cfg->gate_client_port)},
 			{"heart_beat_time" ,	&(cfg->heart_beat_time)},
-
-			{"worker_start_pub",	&(cfg->worker_start_pub)},
+			{"gate_work_pull",		&(cfg->gate_work_pull)},
 			{"gate_work_router",	&(cfg->gate_work_router)},
+			{"worker_start_pub",	&(cfg->worker_start_pub)},
 			{"master_gate_pub", 	&(cfg->master_gate_pub)},
-			{"master_gate_rep", 	&(cfg->master_gate_rep)},
+			{"master_gate_router", 	&(cfg->master_gate_router)},
 			{"master_work_pub", 	&(cfg->master_work_pub)},
-			{"master_work_rep", 	&(cfg->master_work_rep)},
+			{"master_work_router", 	&(cfg->master_work_router)},
 
 			{"master_lua_file",		&(cfg->master_lua_file)},
 			{"master_lua_path",		&(cfg->master_lua_path)},

@@ -12,14 +12,14 @@ worker_start_pub 	= "tcp://127.0.0.1:7%03d"
 
 --gate worker router address
 gate_work_router	= "tcp://127.0.0.1:5005"
-
---master gate push pull address
-master_gate_rep 	= "tcp://127.0.0.1:5001"
+gate_work_pull		= "tcp://127.0.0.1:5006"
+--master gate router address
+master_gate_router 	= "tcp://127.0.0.1:5001"
 --master gate publish sub address
 master_gate_pub 	= "tcp://127.0.0.1:5002"
 
---master worker push pull address
-master_work_rep 	= "tcp://127.0.0.1:5003"
+--master worker router address
+master_work_router 	= "tcp://127.0.0.1:5003"
 --master worker publish sub address
 master_work_pub 	= "tcp://127.0.0.1:5004"
 

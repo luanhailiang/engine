@@ -3,9 +3,9 @@
 
 start()
 {
-	gnome-terminal -t MASTER -e './bin/masterd -c./bin/config.lua -b0'
+	gnome-terminal -t MASTER -e  './bin/masterd -c./bin/config.lua -b0'
 	sleep 0.5
-	gnome-terminal -t GATE -e   './bin/gated   -c./bin/config.lua -b0'
+	gnome-terminal -t GATE -e    './bin/gated   -c./bin/config.lua -b0 -g1'
 	sleep 0.5
 	gnome-terminal -t WORKER1 -e './bin/workerd -c./bin/config.lua -b1 -w1'
 	gnome-terminal -t WORKER2 -e './bin/workerd -c./bin/config.lua -b1 -w2'

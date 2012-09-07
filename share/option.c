@@ -39,7 +39,7 @@ handle_args_opt(int argc, char **argv){
 	int c;
 	int gate = 0;
 	int work = 0;
-	while ((c = getopt(argc, argv, "c: b: w:")) != EOF){
+	while ((c = getopt(argc, argv, "c: b: w: g:")) != EOF){
 		switch (c){
 		case 'c':
 			set_cfg_dir(optarg);
@@ -49,6 +49,9 @@ handle_args_opt(int argc, char **argv){
 			break;
 		case 'w':
 			set_work_id(atoi(optarg));
+			break;
+		case 'g':
+			set_gate_id(atoi(optarg));
 			break;
 		default:
 			printf("Unknown option '%c'.", c);

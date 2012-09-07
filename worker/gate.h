@@ -9,7 +9,7 @@
 #define GATE_H_
 
 void init_gate_connect();
-void send_message_gate(char *id, char *msg);
+void send_message_gate(char *id,const char *msg);
 char *recv_message_gate();
 void *get_gate_dealer();
 

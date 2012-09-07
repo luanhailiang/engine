@@ -10,7 +10,15 @@
 #include "../share/pzmq.h"
 #include "../share/config.h"
 
-static void * g_router = NULL;
+static void *g_pull = NULL;
+static void *g_router = NULL;
+
+static char *g_fd = NULL;
+
+void *
+get_worker_pull(){
+	return g_pull;
+}
 
 void
 send_message_worker(char *work, char *id, char *msg){
@@ -21,7 +29,12 @@ send_message_worker(char *work, char *id, char *msg){
 
 char *
 recv_message_worker(){
-	return s_recv(g_router);
+	if(g_fd != NULL){
+		free(g_fd);
+		g_fd = NULL;
+	}
+	g_fd = s_recv(g_pull);
+	return s_recv(g_pull);
 }
 
 void
@@ -36,4 +49,16 @@ init_worker_router(){
     rc = zmq_bind (g_router, cfg->gate_work_router);
     assert(rc == 0);
     printf("Gate router listen on %s ready\n",cfg->gate_work_router);
+}
+void
+init_worker_pull(){
+	int rc;
+	void *context;
+
+	config_t *cfg;
+	cfg = get_config();
+	context = s_context();
+	g_pull = zmq_socket (context, ZMQ_PULL);
+    rc = zmq_bind (g_pull, cfg->gate_work_pull);
+    assert(rc == 0);
 }

@@ -24,13 +24,14 @@ worker_sub_connect(char *addr){
 }
 
 void
-send_message_worker(char *id, char *msg){
+send_message_worker(char *id, const char *msg){
 	s_sendm(g_pub,id);
 	s_send(g_pub,msg);
 }
 
 char *
 recv_message_worker(){
+	free(s_recv(g_sub));
 	return s_recv(g_sub);
 }
 

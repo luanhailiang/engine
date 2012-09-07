@@ -1,7 +1,7 @@
 CC = gcc
 MAKE = make
 INSTALL=install -c
-CFLAGS = -g #-pg
+CFLAGS = -g -pg
 LIBS = 	-lzmq -llua -ldl 
 BIN = ./script/bin
 
@@ -17,10 +17,10 @@ MASTER = masterd
 MONGO = mongo.so
 ZMQ = zmq.so
 
-SHARERCS = pzmq.c config.c option.c utils.c log.c
+SHARERCS = pzmq.c config.c option.c utils.c log.c lua_env.c
 GATERCS = main.c client.c worker.c swap.c master.c
-WORKERRCS = main.c gate.c master.c worker.c backend.c
-MASTERRCS = main.c gate.c worker.c backend.c
+WORKERRCS = main.c gate.c master.c worker.c backend.c binding.c
+MASTERRCS = main.c gate.c worker.c backend.c binding.c
 
 LUA_ZMQ = lualib/zmq
 LUA_MONGO = lualib/mongo

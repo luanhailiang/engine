@@ -10,6 +10,7 @@
 #include "gate.h"
 #include "worker.h"
 #include "master.h"
+#include "binding.h"
 #include "../share/gdef.h"
 #include "../share/config.h"
 
@@ -35,23 +36,23 @@ _ualarm (int usecs, int reload) {
 static void
 _handle_master_message(char *msg){
 	//TODO handle message
-	printf("Worker from master : %s\n",msg);
+	call_master_message(msg);
 }
 static void
 _handle_worker_message(char *msg){
 	//TODO handle message
-	printf("Worker from worker : %s\n",msg);
+	call_worker_message(msg);
 }
 static void
-_handle_gate_message(char *msg){
+_handle_player_message(char *msg){
 	//TODO handle message
-	printf("Worker from gate : %s\n",msg);
+	call_player_message(msg);
 }
 
 void backend(){
 	char *msg;
 
-	void *master_rep;
+	void *master_dealer;
 	void *master_sub;
 	void *worker_sub;
 	void *gate_dealer;
@@ -69,21 +70,22 @@ void backend(){
 	init_worker_pub();
 	init_worker_sub();
 
+	init_lua_binding();
+
 	master_sub = get_master_sub();
-	master_rep = get_master_req();
+	master_dealer = get_master_dealer();
 	worker_sub = get_worker_sub();
 	gate_dealer = get_gate_dealer();
 
 	// Initialize poll set
 	zmq_pollitem_t items [] = {
 		{ master_sub, 0, ZMQ_POLLIN, 0 },
-		{ master_rep, 0, ZMQ_POLLIN, 0 },
+		{ master_dealer, 0, ZMQ_POLLIN, 0 },
 		{ worker_sub, 0, ZMQ_POLLIN, 0 },
 		{ gate_dealer, 0, ZMQ_POLLIN, 0 }
 	};
 	// Process messages from both sockets
 	while (1) {
-		zmq_msg_t message;
 		zmq_poll (items, 4, 1000);
 		if (items [0].revents & ZMQ_POLLIN) {
 	        while((msg = recv_message_master()) != NULL){
@@ -105,7 +107,7 @@ void backend(){
 		}
 		if (items [3].revents & ZMQ_POLLIN) {
 	        while((msg = recv_message_gate()) != NULL){
-	        	_handle_gate_message(msg);
+	        	_handle_player_message(msg);
 	        	free(msg);
 	        }
 		}
