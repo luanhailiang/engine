@@ -9,8 +9,8 @@
 #define BINDING_H_
 
 void init_lua_binding();
-void call_player_message(char *msg);
-void call_worker_message(char *msg);
+void call_player_message(char *id, char *msg);
+void call_worker_message(char *id, char *msg);
 void call_master_message(char *msg);
 
 #endif /* BINDING_H_ */

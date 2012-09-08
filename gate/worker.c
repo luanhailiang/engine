@@ -13,8 +13,6 @@
 static void *g_pull = NULL;
 static void *g_router = NULL;
 
-static char *g_fd = NULL;
-
 void *
 get_worker_pull(){
 	return g_pull;
@@ -27,14 +25,26 @@ send_message_worker(char *work, char *id, char *msg){
 	s_send(g_router,msg);
 }
 
-char *
+msg_t *
 recv_message_worker(){
-	if(g_fd != NULL){
-		free(g_fd);
-		g_fd = NULL;
+	static msg_t msg = {NULL,NULL};
+	if(msg.id != NULL){
+		free(msg.id);
+		msg.id=NULL;
 	}
-	g_fd = s_recv(g_pull);
-	return s_recv(g_pull);
+	if(msg.msg != NULL){
+		free(msg.msg);
+		msg.msg=NULL;
+	}
+	msg.id = s_recv(g_pull);
+	if(msg.id == NULL){
+		return NULL;
+	}
+	msg.msg = s_recv(g_pull);
+	if(msg.msg == NULL){
+		return NULL;
+	}
+	return &msg;
 }
 
 void
@@ -61,4 +71,5 @@ init_worker_pull(){
 	g_pull = zmq_socket (context, ZMQ_PULL);
     rc = zmq_bind (g_pull, cfg->gate_work_pull);
     assert(rc == 0);
+    printf("Gate pull listen on %s ready\n",cfg->gate_work_pull);
 }

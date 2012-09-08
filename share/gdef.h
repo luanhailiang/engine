@@ -21,4 +21,10 @@
 #include <time.h>
 #include <sys/time.h>
 
+
+typedef struct msg_s{
+	char *id;
+	char *msg;
+}msg_t;
+
 #endif /* GDEF_H_ */

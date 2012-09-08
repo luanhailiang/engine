@@ -19,20 +19,44 @@ get_worker_sub(){
 
 void
 worker_sub_connect(char *addr){
-	assert(g_sub == NULL);
+	assert(g_sub != NULL);
 	zmq_connect (g_sub, addr);
 }
 
 void
 send_message_worker(char *id, const char *msg){
+	char my_id[5];
+	config_t *cfg;
+	cfg = get_config();
+    assert(cfg->work_id != 0);
+    sprintf(my_id,"%03d",cfg->work_id);
 	s_sendm(g_pub,id);
+	s_sendm(g_pub,my_id);
 	s_send(g_pub,msg);
 }
 
-char *
+msg_t *
 recv_message_worker(){
 	free(s_recv(g_sub));
-	return s_recv(g_sub);
+
+	static msg_t msg = {NULL,NULL};
+	if(msg.id != NULL){
+		free(msg.id);
+		msg.id=NULL;
+	}
+	if(msg.msg != NULL){
+		free(msg.msg);
+		msg.msg=NULL;
+	}
+	msg.id = s_recv(g_sub);
+	if(msg.id == NULL){
+		return NULL;
+	}
+	msg.msg = s_recv(g_sub);
+	if(msg.msg == NULL){
+		return NULL;
+	}
+	return &msg;
 }
 
 void

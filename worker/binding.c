@@ -78,19 +78,17 @@ init_lua_binding(){
 }
 
 void
-call_player_message(char *msg){
-	char *back;
+call_player_message(char *id,char *msg){
 	config_t *cfg;
 	cfg = get_config();
-	call_va(cfg->worker_lua_player,"s>s",msg,&back);
-	back_message_gate(back);
+	call_va(cfg->worker_lua_player,"ss>",id,msg);
 }
 
 void
-call_worker_message(char *msg){
+call_worker_message(char *id,char *msg){
 	config_t *cfg;
 	cfg = get_config();
-	call_va(cfg->worker_lua_worker,"s>",msg);
+	call_va(cfg->worker_lua_worker,"ss>",id,msg);
 }
 
 void

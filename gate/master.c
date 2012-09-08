@@ -31,14 +31,25 @@ send_message_master(char *msg){
 
 char *
 recv_message_master(){
-	return s_recv(g_sub);
+	static char *last = NULL;
+	if(last != NULL){
+		free(last);
+		last = NULL;
+	}
+	last = s_recv(g_sub);
+	return last;
 }
 
 char *
 back_message_master(){
-	return s_recv(g_dealer);
+	static char *last = NULL;
+	if(last != NULL){
+		free(last);
+		last = NULL;
+	}
+	last = s_recv(g_dealer);
+	return last;
 }
-
 
 void
 init_master_dealer(){

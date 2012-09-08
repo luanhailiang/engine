@@ -39,18 +39,19 @@ _handle_master_message(char *msg){
 	call_master_message(msg);
 }
 static void
-_handle_worker_message(char *msg){
+_handle_worker_message(char *id, char *msg){
 	//TODO handle message
-	call_worker_message(msg);
+	call_worker_message(id,msg);
 }
 static void
-_handle_player_message(char *msg){
+_handle_player_message(char *id, char *msg){
 	//TODO handle message
-	call_player_message(msg);
+	call_player_message(id,msg);
 }
 
 void backend(){
 	char *msg;
+	msg_t *msgs;
 
 	void *master_dealer;
 	void *master_sub;
@@ -90,25 +91,21 @@ void backend(){
 		if (items [0].revents & ZMQ_POLLIN) {
 	        while((msg = recv_message_master()) != NULL){
 	        	_handle_master_message(msg);
-	        	free(msg);
 	        }
 		}
 		if (items [1].revents & ZMQ_POLLIN) {
 	        while((msg = back_message_master()) != NULL){
 	        	_handle_master_message(msg);
-	        	free(msg);
 	        }
 		}
 		if (items [2].revents & ZMQ_POLLIN) {
-	        while((msg = recv_message_worker()) != NULL){
-	        	_handle_worker_message(msg);
-	        	free(msg);
+	        while((msgs = recv_message_worker()) != NULL){
+	        	_handle_worker_message(msgs->id,msgs->msg);
 	        }
 		}
 		if (items [3].revents & ZMQ_POLLIN) {
-	        while((msg = recv_message_gate()) != NULL){
-	        	_handle_player_message(msg);
-	        	free(msg);
+	        while((msgs = recv_message_gate()) != NULL){
+	        	_handle_player_message(msgs->id,msgs->msg);
 	        }
 		}
 	}

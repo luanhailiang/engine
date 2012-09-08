@@ -9,6 +9,7 @@ eth_name			= "eth0"
 
 --worker bind port start
 worker_start_pub 	= "tcp://127.0.0.1:7%03d"
+worker_start_router = "tcp://127.0.0.1:65%02d"
 
 --gate worker router address
 gate_work_router	= "tcp://127.0.0.1:5005"

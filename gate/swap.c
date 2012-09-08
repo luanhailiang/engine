@@ -11,9 +11,6 @@
 #include "master.h"
 #include "../share/gdef.h"
 
-int client=0;
-int master=0;
-
 static void
 _handle_client_message(interactive_t *ip, char *cmd){
 	//TODO handle message
@@ -29,24 +26,19 @@ _handle_client_message(interactive_t *ip, char *cmd){
 		default:
 			break;
 	}
-	client++;
 	send_message_master(cmd);
-}
-
-static void
-_handle_worker_message(char *msg){
-	//TODO handle message
-	printf("Gate from worker : %s\n",msg);
 }
 
 static void
 _handle_master_message(char *msg){
 	//TODO handle message
-	master++;
-	if(!(master%1000)){
-		printf(" %10d %10d %10d\n",client-master,client,master);
-	}
-//	printf("Gate from master : %s\n",msg);
+	printf("Gate from master : %s\n",msg);
+}
+
+static void
+_handle_worker_message(char *id, char *msg){
+	//TODO handle message
+	printf("Gate from worker : %s\n",msg);
 }
 
 void
@@ -54,6 +46,7 @@ start_loop(){
 	int n;
 	int nfds;
 	char *msg;
+	msg_t *msgs;
 
 	void *master_sub;
 	void *worker_pull;
@@ -87,19 +80,16 @@ start_loop(){
 		if (items [0].revents & ZMQ_POLLIN) {
 	        while((msg = recv_message_master()) != NULL){
 	        	_handle_master_message(msg);
-	        	free(msg);
 	        }
 		}
 		if (items [1].revents & ZMQ_POLLIN) {
-	        while((msg = recv_message_worker()) != NULL){
-	        	_handle_worker_message(msg);
-	        	free(msg);
+	        while((msgs = recv_message_worker()) != NULL){
+	        	_handle_worker_message(msgs->id,msgs->msg);
 	        }
 		}
 		if (items [2].revents & ZMQ_POLLIN) {
 	        while((msg = back_message_master()) != NULL){
 	        	_handle_master_message(msg);
-	        	free(msg);
 	        }
 		}
         nfds = epoll_wait(g_epollfd, events, MAX_EVENTS, 0);

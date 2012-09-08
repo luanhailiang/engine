@@ -90,9 +90,11 @@ load_config(){
 			{"eth_name",			&(cfg->eth_name)},
 			{"gate_client_port",	&(cfg->gate_client_port)},
 			{"heart_beat_time" ,	&(cfg->heart_beat_time)},
+
 			{"gate_work_pull",		&(cfg->gate_work_pull)},
 			{"gate_work_router",	&(cfg->gate_work_router)},
 			{"worker_start_pub",	&(cfg->worker_start_pub)},
+			{"worker_start_router",	&(cfg->worker_start_router)},
 			{"master_gate_pub", 	&(cfg->master_gate_pub)},
 			{"master_gate_router", 	&(cfg->master_gate_router)},
 			{"master_work_pub", 	&(cfg->master_work_pub)},

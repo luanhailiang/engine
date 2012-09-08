@@ -12,18 +12,9 @@
 static void *g_pub = NULL;
 static void *g_router = NULL;
 
-static char *g_last = NULL;
-
 void *
 get_gate_router(){
 	return g_router;
-}
-void
-clear_last_gate(){
-	if(g_last != NULL){
-		free(g_last);
-		g_last=NULL;
-	}
 }
 
 void
@@ -37,21 +28,26 @@ send_message_gate(char *id, const char *msg){
 	s_send(g_router,msg);
 }
 
-char *
+msg_t *
 recv_message_gate(){
-	if(g_last != NULL){
-		free(g_last);
-		g_last=NULL;
+	static msg_t msg = {NULL,NULL};
+	if(msg.id != NULL){
+		free(msg.id);
+		msg.id=NULL;
 	}
-	g_last = s_recv(g_router);
-	return s_recv(g_router);
-}
-
-void
-back_message_gate(const char *msg){
-	assert(g_last != NULL);
-	s_sendm(g_router,g_last);
-	s_send(g_router,msg);
+	if(msg.msg != NULL){
+		free(msg.msg);
+		msg.msg=NULL;
+	}
+	msg.id = s_recv(g_router);
+	if(msg.id == NULL){
+		return NULL;
+	}
+	msg.msg = s_recv(g_router);
+	if(msg.msg == NULL){
+		return NULL;
+	}
+	return &msg;
 }
 
 void

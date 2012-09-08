@@ -22,6 +22,7 @@ typedef struct config_s{
 
 
 	char *worker_start_pub;
+	char *worker_start_router;
 	char *gate_work_router;
 	char *gate_work_pull;
 
