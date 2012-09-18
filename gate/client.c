@@ -363,12 +363,55 @@ add_message(interactive_t *ip, char *msg, int len){
 		_flush_message(ip);
 	}
 }
+
+#ifdef USE_PACKAGE
+/**
+ * get the first message from buff
+ * ^[short]message[\0]
+ */
+char *
+first_cmd_in_buf(interactive_t *ip){
+    char *p;
+    char *end;
+    short len;
+    /* do standard input buffer cleanup */
+    if (!_clean_buf(ip)){
+    	return 0;
+    }
+research:
+    /* search for the newline */
+    for(p = ip->recv_buf+ip->recv_bgn, end = ip->recv_buf+ip->recv_end; p < end; p++){
+    	if(*p == '^'){
+    		break;
+    	}
+    }
+    /* package not full */
+    if(end-p < 4){
+    	return 0;
+    }
+    memcpy(&len,++p,sizeof(short));
+    p += 2;
+    /* message not full */
+    if(len+1 > end-p){
+    	return 0;
+    }
+    ip->recv_bgn = p+len+1-ip->recv_buf;
+    /* error end */
+    if(*(p+len) != '\0'){
+		fprintf(stderr,"first_cmd_in_buf:error format end "
+				"%d bytes\n",(int)(*(p+len)));
+    	goto research;
+    }
+    return p;
+}
+#else
 /**
  * get the first message from buff
  */
 char *
 first_cmd_in_buf(interactive_t *ip){
     char *p;
+    char *end;
     char *temp;
 
     /* do standard input buffer cleanup */
@@ -376,7 +419,7 @@ first_cmd_in_buf(interactive_t *ip){
     	return 0;
     }
     /* search for the newline */
-    for(p = ip->recv_buf+ip->recv_bgn; p<(ip->recv_buf+ip->recv_end); p++){
+    for(p = ip->recv_buf+ip->recv_bgn, end = ip->recv_buf+ip->recv_end; p<end; p++){
     	if(*p == '\n'){
     		break;
     	}
@@ -393,3 +436,4 @@ first_cmd_in_buf(interactive_t *ip){
     ip->recv_bgn = temp - ip->recv_buf;
     return p;
 }
+#endif
